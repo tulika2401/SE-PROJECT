@@ -1,0 +1,271 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% -----------------------------------------------------
+% bvraghav-tiet-ucs503p-article.sty
+% -----------------------------------------------------
+
+% Variable: Lab Instructor
+\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
+  \gdef\Bvr@LabInstructor{#1}}
+% default
+\newcommand{\Bvr@LabInstructor}{Dr. Raghav %
+  B. Venkataramaiyer}
+% public accessor
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Add subtitle
+\usepackage{titling}
+% -- Set title bold
+\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip 0.5em}%
+}
+\makeatother
+
+% Hints in the section title(s)
+\newcommand{\BvrHint}[1]{%
+  {\normalfont\normalsize\itshape\hfill #1}}
+
+% -----------------------------------------------------
+
+\title{Taste-Based Social Discovery Platform}
+
+\BvrSetLabInstructor{Dr. Anushka}
+
+\BvrSubtitle{%
+  Project Proposal for UCS503P  \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology% 
+}
+
+\author{
+  Tulika Jain, CSED%
+  \thanks{Roll No: \texttt{1024160110}, %
+    Email: \texttt{tjain\_be24\@thapar.edu}}
+  \and 
+  Mukul, CSED%
+  \thanks{Roll No: \texttt{1024160124}, %
+    Email: \texttt{mmukul\_be24\@thapar.edu}}
+  \and
+  Pranav Tiwari, CSED%
+  \thanks{Roll No: \texttt{1024160127}, %
+    Email: \texttt{ptiwari1\_be24\@thapar.edu}}
+}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Higher-order goal%
+  \BvrHint{\ldots secondary framing}}
+This project aims to improve social discovery by helping users find and connect with people
+who share similar tastes across multiple domains of entertainment and interest, rather than
+a single category such as music alone. While the broader ambition is to rethink how people
+find community online, the immediate engineering objective is to translate \emph{taste
+similarity} into a measurable, explainable compatibility score delivered through a working
+software system.
+
+\section{Time-to-value %
+\BvrHint{\ldots primary heuristic}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item We will deliver meaningful increments quickly by prototyping the core taste-matching workflow (profile $\rightarrow$ Taste DNA $\rightarrow$ compatibility score) and validating it with real users within a short iteration window.
+    \item We will prioritize fast feedback over perfection by using weekly iterations, starting with a simple weighted-similarity matching algorithm before attempting any NLP/embedding-based approach.
+    \item Success is defined by what can be delivered and measured in the first iteration -- a working ``Find My People'' flow with an explainable match score -- then improved based on user feedback.
+\end{itemize}
+
+\section{Problem Statement}
+Existing social platforms are typically organized around a single content category (e.g.,
+music, photos, short video) or around a follower-based model that optimizes for reach rather
+than genuine compatibility. This creates several pain points for users who want to find
+people who actually share their taste:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Fragmentation:} a person's taste is spread across separate apps -- one for music, one for movies, one for books -- with no unified representation of ``who they are.''
+    \item \textbf{Opaque recommendations:} existing ``suggested for you'' features rarely explain \emph{why} two users were matched, reducing trust in the suggestion.
+    \item \textbf{Follower-centric design:} following someone is a one-directional, low-commitment action that does not guarantee any shared interest, leading to noisy, low-relevance feeds.
+    \item \textbf{Weak niche discovery:} users with specific or unusual combinations of interests (e.g., dark academia aesthetics, psychological thrillers, and Formula 1) struggle to find others who share that exact combination.
+\end{itemize}
+
+\textbf{Why this matters now (contextual relevance):} As content categories multiply and attention fragments across apps, a unifying, cross-domain notion of ``taste'' is increasingly useful for meaningful (rather than purely algorithmic) social discovery.
+
+\textbf{Positioning relative to existing tools:} single-category platforms (e.g., Letterboxd for
+film, Goodreads for books) already let users track taste within one domain, and dating/social
+apps increasingly surface shared interest tags as a matching signal. What this project adds is
+not a new content category, but (i) a \emph{cross-domain} taste representation spanning multiple
+interest types at once, and (ii) an \emph{explainable} compatibility score that shows the
+specific shared interests behind a match, rather than an opaque ``suggested for you'' ranking.
+
+\section{Proposed Solution %
+\BvrHint{\ldots Software Proposition}}
+\subsection{Overview}
+Build a \textbf{mobile-first} ``Taste Discovery'' platform with the following components:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Taste DNA profile:} users build an interest profile from keywords spanning music, movies, and books at launch, with additional categories (memes, games, shows, sports, food, photography, custom/niche tags) added in later iterations.
+    \item \textbf{Content Drops:} lightweight posts through which users share and tag content they like, categorized by domain.
+    \item \textbf{Taste-based matching engine:} computes a per-category and overall compatibility score between users based on shared keywords and content.
+    \item \textbf{Find My People:} a ranked, explainable list of recommended users, each annotated with the specific shared interests driving the match.
+    \item \textbf{Connection system:} opt-in, bidirectional connections (request/accept) rather than one-directional following, gating private content behind mutual connection.
+    \item \textbf{Communities:} niche, tag-based groups (e.g., \texttt{\#DarkAcademia}, \texttt{\#F1Girls}) for users to congregate around specific shared interests -- deferred to a subsequent iteration.
+\end{itemize}
+
+\subsection{Core workflow}
+\begin{enumerate}[leftmargin=0.7cm]
+    \item User signs up, creates a profile, and selects interest keywords to build their Taste DNA.
+    \item User explores and engages with content across the launch categories (music, movies, books) through likes, saves, and Drops.
+    \item System computes per-category and overall compatibility scores against other users.
+    \item User opens ``Find My People'' and views ranked matches with an explainable ``why you matched'' breakdown.
+    \item User sends a connection request; once accepted, the match's full profile and interest details unlock.
+\end{enumerate}
+
+\subsection{Operational constraints for an educational setting}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Keep the matching algorithm computationally lightweight (weighted keyword/content overlap) for the MVP; avoid dependence on research-grade embedding models initially.
+    \item Design for deployability using common managed backend/database hosting and free-tier external content APIs (TMDB, Spotify, Google Books).
+    \item Keep authentication, storage, and moderation simple but secure by design from the first iteration, since the platform handles personal interest and chat data.
+\end{itemize}
+
+\section{Solution Approach %
+\BvrHint{\ldots Engineering focus}}
+This is an engineering course project, so we focus on a correct, secure, and scalable matching-and-connection workflow rather than novel recommendation-system research.
+
+\subsection{Taste-matching %
+\BvrHint{\ldots non-research}}
+The MVP matching algorithm will be heuristic-based:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Represent each user's Taste DNA as a set/vector of weighted keywords across categories.
+    \item Compute per-category similarity (e.g., Jaccard or cosine overlap on keyword sets) and combine into a weighted overall compatibility score, without claiming state-of-the-art accuracy.
+    \item Always surface the specific shared keywords/content behind a match, so recommendations are explainable rather than opaque.
+\end{itemize}
+
+\subsection{System architecture %
+\BvrHint{\ldots mobile/web-based solution}}
+A typical mobile-client / backend-API / database architecture:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Frontend:} Flutter mobile client for profile, explore, matching, chat, and community screens.
+    \item \textbf{Backend API:} FastAPI service handling authentication, profile/Taste DNA management, matching computation, connections, and chat metadata.
+    \item \textbf{Database:} MongoDB storing user profiles, keywords, content, Drops, connections, communities, and reports.
+\end{itemize}
+
+\subsection{CI/CD and fast delivery enabler}
+CI/CD will be used to:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Automatically build and run backend/frontend tests on every change.
+    \item Produce repeatable deployment artifacts to a staging environment.
+    \item Enable safe, frequent releases of incremental matching and social features.
+\end{itemize}
+
+\section{Evaluation Criterion %
+\BvrHint{\ldots measurable and attributable}}
+We define success using measurable metrics tied to the core matching-and-connection workflow.
+
+\subsection{Primary evaluation metric}
+\textbf{Match-to-connection rate (MCR):} the percentage of ``Find My People'' recommendations that result in a sent connection request within a defined window.
+\begin{itemize}[leftmargin=0.7cm]
+    \item Target: MCR $\ge$ 20\% during the pilot window.
+    \item Attribution: measured from database timestamps comparing recommendation impressions to connection-request events.
+\end{itemize}
+
+\subsection{Secondary evaluation metrics}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Connection acceptance rate:} percentage of sent requests that are accepted, as a proxy for match quality.
+    \item \textbf{Explainability satisfaction:} pilot users rate the ``why you matched'' explanation on a simple 1--5 clarity/usefulness scale.
+    \item \textbf{Taste DNA completion rate:} percentage of new users who complete a minimum viable Taste DNA (e.g., $\ge$ 5 keywords across $\ge$ 2 categories) during onboarding.
+    \item \textbf{Match explanation density:} average number of shared-interest tags surfaced per top-5 recommended match. This is measurable directly from stored data without waiting on user behavior, and serves as an early proxy for match quality even before enough connection events accumulate.
+    \item \textbf{Reliability:} availability of staging/production for login, profile, and matching endpoints (e.g., $\ge$ 99\% uptime in pilot).
+\end{itemize}
+
+\subsection{Pilot validation plan %
+\BvrHint{\ldots high-level}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recruit 20--30 pilot users with varied interest profiles to seed a meaningful matching pool.
+    \item To mitigate the cold-start problem inherent to a small pilot, supplement real signups with a curated set of synthetic profiles carrying deliberately overlapping taste keywords, ensuring the matching engine has enough density to produce meaningful, demoable matches even before organic adoption grows.
+    \item Compare MCR and acceptance rate before/after refining the weighting of the similarity algorithm within the iteration window.
+\end{itemize}
+
+\section{Scalability %
+\BvrHint{\ldots with foresight}}
+The proposition should scale in both theoretical and practical senses.
+
+\begin{enumerate}[leftmargin=0.7cm]
+    \item \textbf{Scalable (theoretically):} The system should support growth in number of users and matching computations by:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item decoupling the matching engine from the core API for independent scaling,
+        \item precomputing/caching compatibility scores instead of recomputing on every request,
+        \item using indexed queries on keyword and category fields.
+    \end{itemize}
+    
+    \item \textbf{Operationally deployable (practically):} The system should run on common hosting:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item managed document database (MongoDB Atlas),
+        \item containerized or platform-hosted backend deployment,
+        \item CI/CD pipeline for staging/production releases.
+    \end{itemize}
+\end{enumerate}
+
+\section{Engine availability heuristic}
+A mature set of ``engines'' (tooling/services) is available to implement this as a mobile/web project:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Mobile framework (Flutter) for cross-platform client development.
+    \item Web framework (FastAPI) for REST APIs.
+    \item Managed document database (MongoDB Atlas).
+    \item Authentication service (Firebase Authentication).
+    \item Object storage for images/memes (Cloudinary).
+    \item Established similarity/matching libraries (NumPy, scikit-learn) for the MVP algorithm.
+    \item External content APIs (TMDB, Spotify, Google Books) to avoid building content catalogs from scratch.
+    \item Test frameworks (Pytest, Flutter test) and CI runners for staging deployment.
+\end{itemize}
+We will use these mature components to focus on matching-workflow design, explainability, and security rather than inventing new infrastructure.
+
+\section{Project scope and deliverables %
+\BvrHint{\ldots iteration-friendly}}
+\subsection{Initial deliverable %
+\BvrHint{\ldots first iteration (MVP)}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item User authentication and profile creation
+    \item Taste DNA keyword selection across music, movies, and books
+    \item Content Drops: create, view, like, and save
+    \item Weighted-similarity compatibility scoring between users
+    \item ``Find My People'' ranked list with explainable match reasons
+    \item Connection requests: send, accept, reject
+    \item Privacy settings (public/private profile, hide/show interests)
+    \item Block/report functionality
+    \item CI: build + backend unit tests + linting; CD to staging
+\end{itemize}
+The MVP deliberately excludes chat, memes, and communities so that the first iteration's demo
+stays centered on the core loop: building a Taste DNA, computing an explainable match, and
+connecting.
+
+\subsection{Subsequent deliverables}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Basic one-to-one chat between connected users
+    \item Meme category: upload, tag, and share
+    \item Niche communities: create/join, community posts and discussions
+    \item Admin/moderator dashboard for reports and content moderation
+    \item Notification layer for connections, messages, likes, and new matches
+    \item Semantic/embedding-based matching (Sentence Transformers, FAISS) as a research-grade upgrade to the MVP keyword-overlap algorithm
+    \item Vibe Rooms (temporary interest-based real-time spaces) and group chats
+\end{itemize}
+
+\section{Risks and mitigations}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Data privacy / consent:} minimize collected personal data; keep interest visibility opt-in; never store plaintext passwords; keep secrets in environment variables, not the frontend.
+    \item \textbf{Cold-start matching:} with few pilot users, compatibility scores may be sparse or low-quality; mitigate by seeding a diverse pilot cohort and lowering the minimum-keyword threshold for early matches.
+    \item \textbf{Content moderation risk:} user-uploaded profile images and Drops could surface inappropriate content, and this risk grows once memes and chat are added in later iterations; mitigate with upload validation, reporting flows, and admin moderation built in from the first iteration rather than bolted on later.
+    \item \textbf{Evaluation measurement ambiguity:} instrument recommendation-impression and connection-request events with clear timestamps before development begins.
+    \item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments to reduce pilot downtime.
+\end{itemize}
+
+\section{Summary}
+This project proposes a deployable taste-based social discovery platform that helps users find and connect with people who share similar interests across multiple content domains, rather than a single category or a follower-based model. It meets the course criteria by emphasizing time-to-value through rapid iterations starting with a lightweight, explainable matching algorithm, implementing CI/CD to support frequent safe releases, and using measurable evaluation criteria (especially match-to-connection rate). It remains focused on engineering workflow, security, and scalability readiness in its MVP, while reserving semantic/embedding-based matching as a well-scoped future enhancement rather than a first-iteration research dependency.
+
+\end{document}
